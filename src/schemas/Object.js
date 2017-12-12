@@ -1,7 +1,7 @@
 import * as ImmutableUtils from './ImmutableUtils';
 
 export const normalize = (schema, input, parent, key, visit, addEntity) => {
-  const object = { ...input };
+  const object = { ...input, type: schema };
   Object.keys(schema).forEach((key) => {
     const localSchema = schema[key];
     const value = visit(input[key], input, key, localSchema, addEntity);
@@ -20,6 +20,7 @@ export const denormalize = (schema, input, unvisit) => {
   }
 
   const object = { ...input };
+  delete object['type'];
   Object.keys(schema).forEach((key) => {
     if (object[key]) {
       object[key] = unvisit(object[key], schema[key]);

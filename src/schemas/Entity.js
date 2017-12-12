@@ -57,8 +57,13 @@ export default class EntitySchema {
       }
     });
 
+    processedEntity['type'] = this._key;
     addEntity(this, processedEntity, input, parent, key);
-    return this.getId(input, parent, key);
+
+    return {
+      id: this.getId(input, parent, key),
+      type: this._key
+    };
   }
 
   denormalize(entity, unvisit) {
@@ -72,6 +77,12 @@ export default class EntitySchema {
         entity[key] = unvisit(entity[key], schema);
       }
     });
+
+    delete entity['type'];
+    if (entity.id && Object.keys(entity).length === 1) {
+      return entity.id;
+    }
+
     return entity;
   }
 }
